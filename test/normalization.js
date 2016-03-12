@@ -4,7 +4,7 @@
 
 var assert = require("assert");
 var fs = require("fs");
-var unorm = require("../lib/unorm.js");
+var nfdForNativeString = require("./support").nfdForNativeString;
 
 var utdata = fs.readFileSync(__dirname + "/../data/NormalizationTest.txt").toString();
 var tests = [];
@@ -42,35 +42,14 @@ function doTest(test){
       return String.fromCharCode.apply(undefined, p);
    });
 
-   var nfd = raw.map(unorm.nfd);
-   var nfkd = raw.map(unorm.nfkd);
-   var nfc = raw.map(unorm.nfc);
-   var nfkc = raw.map(unorm.nfkc);
+   var nfd = raw.map(nfdForNativeString);
 
-   //NFC
-   assert.strictEqual(nfc[0], raw[1], test.line + ": c2 == NFC(c1)");
-   assert.strictEqual(nfc[1], raw[1], test.line + ": c2 == NFC(c2)");
-   assert.strictEqual(nfc[2], raw[1], test.line + ": c2 == NFC(c3)");
-   assert.strictEqual(nfc[3], raw[3], test.line + ": c4 == NFC(c4)");
-   assert.strictEqual(nfc[4], raw[3], test.line + ": c4 == NFC(c5)");
    //NFD
    assert.strictEqual(nfd[0], raw[2], test.line + ": c3 == NFD(c1)");
    assert.strictEqual(nfd[1], raw[2], test.line + ": c3 == NFD(c2)");
    assert.strictEqual(nfd[2], raw[2], test.line + ": c3 == NFD(c3)");
    assert.strictEqual(nfd[3], raw[4], test.line + ": c5 == NFD(c4)");
    assert.strictEqual(nfd[4], raw[4], test.line + ": c5 == NFD(c5)");
-   //NFKC
-   assert.strictEqual(nfkc[0], raw[3], test.line + ": c5 == NFKC(c1)");
-   assert.strictEqual(nfkc[1], raw[3], test.line + ": c5 == NFKC(c2)");
-   assert.strictEqual(nfkc[2], raw[3], test.line + ": c5 == NFKC(c3)");
-   assert.strictEqual(nfkc[3], raw[3], test.line + ": c5 == NFKC(c4)");
-   assert.strictEqual(nfkc[4], raw[3], test.line + ": c5 == NFKC(c5)");
-   //NFKD
-   assert.strictEqual(nfkd[0], raw[4], test.line + ": c5 == NFKD(c1)");
-   assert.strictEqual(nfkd[1], raw[4], test.line + ": c5 == NFKD(c2)");
-   assert.strictEqual(nfkd[2], raw[4], test.line + ": c5 == NFKD(c3)");
-   assert.strictEqual(nfkd[3], raw[4], test.line + ": c5 == NFKD(c4)");
-   assert.strictEqual(nfkd[4], raw[4], test.line + ": c5 == NFKD(c5)");
 }
 
 describe("normalization " + tests.length + " tests", function () {
