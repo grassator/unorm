@@ -4,7 +4,17 @@
 var unorm = require("../lib/unorm");
 
 exports.nfdForNativeString = function (str) {
-    var iter = unorm.nfd(str[Symbol.iterator]());
+    var strIter = {
+        originalIter: str[Symbol.iterator](),
+        next: function () {
+            var result = this.originalIter.next();
+            if (!result.done) {
+                result.value = result.value.codePointAt(0);
+            }
+            return result;
+        }
+    };
+    var iter = unorm.nfd(strIter);
     var codePoints = [];
     var it;
     while((it = iter.next()) && !it.done) {
